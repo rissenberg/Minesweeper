@@ -1,15 +1,12 @@
-import {counterTypes} from "../actions/counterActions";
+import {coordTypes} from "../actions/coordActions";
 
-export const counterReducer = (state, action) => {
+export const coordReducer = (state, action) => {
     const newState = deepCopy(state);
 
     switch (action.type) {
-        case counterTypes.INCREMENT_BY:
-            newState.count += action.payload;
-            return newState;
-
-        case counterTypes.DECREMENT_BY:
-            newState.count -= action.payload;
+        case coordTypes.SET:
+            newState.x = action.payload.x;
+            newState.y = action.payload.y;
             return newState;
 
         default:
