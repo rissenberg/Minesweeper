@@ -12,12 +12,21 @@ body {
     width: fit-content;
 }
 
-.coordLabel {
+.coord-label {
     text-align: center;
     padding: 20px;
     font-size: 24px;
 }
 
-canvas {
+.field-container {
     margin: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0;
+}
+
+.hidden {
+    visibility: hidden;
+    display: none;
 }
