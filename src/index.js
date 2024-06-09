@@ -1,25 +1,28 @@
 import Store from "./store/Store";
 import Dispatcher from "./store/Dispatcher";
 import "./styles.css";
-import {createField} from "./field";
-import {coordReducer} from "./store/reducers/counterReducer";
+import {createField} from "./components/field";
+import {mapReducer} from "./store/reducers/coordReducer";
 
 const initialState = {
-    x: 0,
-    y: 0,
+    position: {
+        x: 0,
+        y: 0,
+    },
+    fieldMap: [],
 }
 
-const store = new Store(coordReducer, initialState);
+const store = new Store(mapReducer, initialState);
 Dispatcher.subscribe(store.doAction);
 
 function render(currentState) {
     const coordLabel = document.querySelector(".coord-label");
-    coordLabel.innerText = `X: ${currentState.x}, Y: ${currentState.y}`;
+    coordLabel.innerText = `X: ${currentState.position.x}, Y: ${currentState.position.y}`;
 }
 
-store.subscribe(render);
+store.subscribe('position_label', render);
 
-createField(1000, 1000);
+createField(100, 100);
 
-const canv1 = document.querySelector('canvas');
-canv1.classList.remove('hidden');
+export default store;
+

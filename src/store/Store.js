@@ -1,7 +1,7 @@
 const DEFAULT_STATE = {};
 
 class Store {
-    subscribers = [];
+    subscribers = new Map();
 
     constructor(reducer, initialState = DEFAULT_STATE) {
         this.currentState = initialState;
@@ -12,14 +12,14 @@ class Store {
         return this.currentState
     }
 
-    subscribe = (render) => {
-        this.subscribers.push(render);
+    subscribe = (component, render) => {
+        this.subscribers.set(component, render);
         render(this.currentState);
     }
 
     doAction = (action) => {
         this.currentState = this.reducer(this.currentState, action);
-        this.subscribers.forEach(render => render(this.currentState));
+        Array.from(this.subscribers.values()).forEach(render => render(this.currentState));
     }
 }
 
