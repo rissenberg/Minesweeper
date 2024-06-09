@@ -19,4 +19,4 @@ function render(currentState) {
 
 store.subscribe(render);
 
-createField(20, 20);
+createField(500, 500);
