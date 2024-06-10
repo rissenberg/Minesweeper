@@ -20,11 +20,13 @@ export const openCell = (x, y) => ({
     },
 });
 
-export const initMap = (width, height) => ({
+export const initMap = (width, height, mines, position) => ({
     type: mapTypes.INIT_MAP,
     payload: {
         width,
-        height
+        height,
+        mines,
+        position
     },
 });
 

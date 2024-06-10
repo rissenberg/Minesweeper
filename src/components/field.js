@@ -4,12 +4,13 @@ import {createFieldSector} from "./fieldSector";
 import {throttle} from "../utils/throttle";
 import {setPosition, initMap} from "../store/actions/coordActions";
 
-const RENDER_DELAY = 50;
 
-export const createField = (width, height) => {
+export const createField = (width, height, mines) => {
     const { dispatch } = Dispatcher;
 
-    dispatch(initMap(width, height));
+    const renderDelay = width * height > 500000 ? 50 : 25;
+
+    dispatch(initMap(width, height, mines, { x: 0, y: 0 }));
 
     const fieldContainer = document.getElementById("field-container");
     fieldContainer.style.width = `${width * CELL_SIZE}px`;
@@ -26,8 +27,12 @@ export const createField = (width, height) => {
 
         const x1 = Math.floor(windowScrollX / CELL_SIZE + 0.9);
         const y1 = Math.floor(windowScrollY / CELL_SIZE + 0.9);
-        const x2 = x1 + cellNumX;
-        const y2 = y1 + cellNumY;
+        const x2 = x1 + cellNumX > width
+                ? width
+                : x1 + cellNumX;
+        const y2 = y1 + cellNumY > height
+            ? height
+            : y1 + cellNumY;
 
         dispatch(setPosition(x1, y1));
 
@@ -41,10 +46,10 @@ export const createField = (width, height) => {
         cellNumY = Math.floor((window.innerHeight - 70) / CELL_SIZE);
 
         requestAnimationFrame(renderView);
-    }, RENDER_DELAY));
+    }, renderDelay));
 
     window.addEventListener("scroll", throttle(() => {
         requestAnimationFrame(renderView);
-    }, RENDER_DELAY));
+    }, renderDelay));
 
 }

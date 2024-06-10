@@ -1,4 +1,5 @@
 import {mapTypes} from "../actions/coordActions";
+import {createInitialMap, openCell} from "../../lib/gameLogic";
 
 export const mapReducer = (state, action) => {
     const newState = deepCopy(state);
@@ -9,18 +10,26 @@ export const mapReducer = (state, action) => {
             return newState;
 
         case mapTypes.INIT_MAP:
-            newState.fieldMap = [];
+            newState.fieldMap = createInitialMap(
+                action.payload.width,
+                action.payload.height,
+                action.payload.mines,
+                action.payload.position,
+            );
+
+            newState.openedCells = [];
             for (let x = 0; x < action.payload.width; x++) {
-                newState.fieldMap[x] = [];
+                newState.openedCells[x] = [];
                 for (let y = 0; y < action.payload.height; y++)
-                    newState.fieldMap[x][y] = 0;
+                    newState.openedCells[x][y] = null;
             }
-            newState.fieldMap[20][20] = 1;
-            newState.fieldMap[15][12] = 1;
+
             return newState;
+
         case mapTypes.OPEN_CELL:
-            newState.fieldMap[action.payload.x][action.payload.y] = true;
+            openCell(newState.fieldMap, newState.openedCells, action.payload);
             return newState;
+
         default:
             return state;
     }

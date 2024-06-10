@@ -35,3 +35,9 @@ body {
 .canvas-view {
     margin: 0 auto;
 }
+
+.minimap {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}

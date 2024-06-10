@@ -10,6 +10,7 @@ const initialState = {
         y: 0,
     },
     fieldMap: [],
+    openedCells: [],
 }
 
 const store = new Store(mapReducer, initialState);
@@ -22,7 +23,7 @@ function render(currentState) {
 
 store.subscribe('position_label', render);
 
-createField(100, 100);
+createField(500, 500, 15000);
 
 export default store;
 
