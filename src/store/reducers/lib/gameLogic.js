@@ -1,149 +1,156 @@
-import {MARKED_CELL_CODE} from "../../../config";
+import { CELL_BOMB_CODE, CELL_CLOSED_CODE, CELL_MARKED_CODE } from '../../../config';
+import { UniqueObjectQueue } from '../../../utils/uniqueQueue';
 
 export const fillMapWithBombs = (width, height, mines, position) => {
-    const bombs = [];
-    const indexes = [];
+	const field = [];
+	const indexes = [];
 
-    for (let x = 0; x < width; x++) {
-        bombs[x] = [];
-        for (let y = 0; y < height; y++) {
-            bombs[x][y] = false;
-            if (x === position.x && y === position.y)
-                continue;
-            indexes.push(x * height + y);
-        }
-    }
+	for (let x = 0; x < width; x++) {
+		field[x] = [];
+		for (let y = 0; y < height; y++) {
+			field[x][y] = CELL_CLOSED_CODE;
+			if (x === position.x && y === position.y)
+				continue;
+			indexes.push(x * height + y);
+		}
+	}
 
-    shuffle(indexes);
+	shuffle(indexes);
 
-    indexes.slice(0, mines).forEach(index => {
-        bombs[Math.floor(index / height)][index % height] = true;
-    });
+	indexes.slice(0, mines).forEach(index => {
+		field[Math.floor(index / height)][index % height] = CELL_BOMB_CODE;
+	});
 
-    return bombs;
-}
-
-const shuffle = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
+	return field;
 };
 
-export const openCell = (bombs, cells, position) => {
-    const { x, y } = position;
+const shuffle = (array) => {
+	for (let i = array.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[array[i], array[j]] = [array[j], array[i]];
+	}
+};
 
-    if (cells[x][y] !== null)
-        return 0;
+export const openCell = (field, position) => {
+	const { x, y } = position;
 
-    const bombsAround = checkBombsAround(bombs, x, y);
-    if (bombsAround === -1)
-        return -1;
+	if (field[x][y] !== CELL_CLOSED_CODE)
+		return 0;
 
-    const queue = [{ x, y }];
-    let openedCounter = 0;
+	const bombsAround = checkBombsAround(field, x, y);
+	if (bombsAround === -1)
+		return -1;
 
-    while (queue.length) {
-        const { x, y } = queue.shift()
-        if (cells[x][y] !== null && cells[x][y] !== MARKED_CELL_CODE)
-            continue;
+	const queue = new UniqueObjectQueue();
+	queue.add({ x, y });
+	let openedCounter = 0;
 
-        openedCounter++;
+	while (queue.size()) {
+		const { x, y } = queue.shift();
 
-        const bombsAround = checkBombsAround(bombs, x, y);
+		if (!isCellUnchecked(field[x][y]))
+			continue;
 
-        cells[x][y] = bombsAround;
-        if (bombsAround === 0) {
-            if (bombs[x - 1]) {
-                if (bombs[x - 1][y - 1] !== null)
-                    queue.push({
-                        x: x - 1,
-                        y: y - 1,
-                    });
-                if (bombs[x - 1][y] !== null)
-                    queue.push({
-                        x: x - 1,
-                        y: y,
-                    });
-                if (bombs[x - 1][y + 1] !== null)
-                    queue.push({
-                        x: x - 1,
-                        y: y + 1,
-                    });
-            }
+		openedCounter++;
 
-            if (bombs[x][y - 1] !== null)
-                queue.push({
-                    x: x,
-                    y: y - 1,
-                });
-            if (bombs[x][y + 1] !== null)
-                queue.push({
-                    x: x,
-                    y: y + 1,
-                });
+		const bombsAround = checkBombsAround(field, x, y);
 
-            if (bombs[x + 1] ) {
-                if (bombs[x + 1][y - 1] !== null)
-                    queue.push({
-                        x: x + 1,
-                        y: y - 1,
-                    });
-                if (bombs[x + 1][y] !== null)
-                    queue.push({
-                        x: x + 1,
-                        y: y,
-                    });
-                if (bombs[x + 1][y + 1] !== null)
-                    queue.push({
-                        x: x + 1,
-                        y: y + 1,
-                    });
-            }
-        }
-    }
+		field[x][y] = bombsAround;
+		if (bombsAround === 0) {
+			if (field[x - 1]) {
+				if (isCellUnchecked(field[x - 1][y - 1]))
+					queue.add({
+						x: x - 1,
+						y: y - 1,
+					});
+				if (isCellUnchecked(field[x - 1][y]))
+					queue.add({
+						x: x - 1,
+						y: y,
+					});
+				if (isCellUnchecked(field[x - 1][y + 1]))
+					queue.add({
+						x: x - 1,
+						y: y + 1,
+					});
+			}
 
-    return openedCounter;
-}
+			if (isCellUnchecked(field[x][y - 1]))
+				queue.add({
+					x: x,
+					y: y - 1,
+				});
+			if (isCellUnchecked(field[x][y + 1]))
+				queue.add({
+					x: x,
+					y: y + 1,
+				});
 
-const checkBombsAround = (bombs, x, y) => {
-    let counter = 0;
+			if (field[x + 1]) {
+				if (isCellUnchecked(field[x + 1][y - 1]))
+					queue.add({
+						x: x + 1,
+						y: y - 1,
+					});
+				if (isCellUnchecked(field[x + 1][y]))
+					queue.add({
+						x: x + 1,
+						y: y,
+					});
+				if (isCellUnchecked(field[x + 1][y + 1]))
+					queue.add({
+						x: x + 1,
+						y: y + 1,
+					});
+			}
+		}
+	}
 
-    if (bombs[x] && bombs[x][y])
-        return -1;
+	return openedCounter;
+};
 
-    if (bombs[x - 1]) {
-        if (bombs[x - 1][y - 1])
-            counter++;
-        if (bombs[x - 1][y])
-            counter++;
-        if (bombs[x - 1][y + 1])
-            counter++;
-    }
-    if (bombs[x]) {
-        if (bombs[x][y - 1])
-            counter++;
-        if (bombs[x][y + 1])
-            counter++;
-    }
-    if (bombs[x + 1]) {
-        if (bombs[x + 1][y - 1])
-            counter++;
-        if (bombs[x + 1][y])
-            counter++;
-        if (bombs[x + 1][y + 1])
-            counter++;
-    }
+const isCellUnchecked = (cell) => {
+	return cell === CELL_CLOSED_CODE || cell === CELL_MARKED_CODE;
+};
 
-    return counter;
-}
+const checkBombsAround = (field, x, y) => {
+	let counter = 0;
 
-export const markCell = (cells, position) => {
-    const {x, y} = position;
+	if (field[x] && field[x][y] === CELL_BOMB_CODE)
+		return -1;
 
-    if (cells[x][y] === null)
-        cells[x][y] = MARKED_CELL_CODE;
+	if (field[x - 1]) {
+		if (field[x - 1][y - 1] === CELL_BOMB_CODE)
+			counter++;
+		if (field[x - 1][y] === CELL_BOMB_CODE)
+			counter++;
+		if (field[x - 1][y + 1] === CELL_BOMB_CODE)
+			counter++;
+	}
+	if (field[x]) {
+		if (field[x][y - 1] === CELL_BOMB_CODE)
+			counter++;
+		if (field[x][y + 1] === CELL_BOMB_CODE)
+			counter++;
+	}
+	if (field[x + 1]) {
+		if (field[x + 1][y - 1] === CELL_BOMB_CODE)
+			counter++;
+		if (field[x + 1][y] === CELL_BOMB_CODE)
+			counter++;
+		if (field[x + 1][y + 1] === CELL_BOMB_CODE)
+			counter++;
+	}
 
-    else if (cells[x][y] === MARKED_CELL_CODE)
-        cells[x][y] = null;
-}
+	return counter;
+};
+
+export const markCell = (field, position) => {
+	const { x, y } = position;
+
+	if (field[x][y] === CELL_CLOSED_CODE)
+		field[x][y] = CELL_MARKED_CODE;
+
+	else if (field[x][y] === CELL_MARKED_CODE)
+		field[x][y] = CELL_CLOSED_CODE;
+};
