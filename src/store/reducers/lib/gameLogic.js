@@ -1,5 +1,4 @@
 import { CELL_BOMB_CODE, CELL_CLOSED_CODE, CELL_MARKED_CODE } from '../../../config';
-import { UniqueObjectQueue } from '../../../utils/uniqueQueue';
 
 export const fillMapWithBombs = (width, height, mines, position) => {
 	const field = [];
@@ -41,13 +40,11 @@ export const openCell = (field, position) => {
 	if (bombsAround === -1)
 		return -1;
 
-	const queue = new UniqueObjectQueue();
-	queue.add({ x, y });
+	const queue = [ { x, y } ];
 	let openedCounter = 0;
 
-	while (queue.size()) {
+	while (queue.length) {
 		const { x, y } = queue.shift();
-
 		if (!isCellUnchecked(field[x][y]))
 			continue;
 
@@ -59,46 +56,46 @@ export const openCell = (field, position) => {
 		if (bombsAround === 0) {
 			if (field[x - 1]) {
 				if (isCellUnchecked(field[x - 1][y - 1]))
-					queue.add({
+					queue.push({
 						x: x - 1,
 						y: y - 1,
 					});
 				if (isCellUnchecked(field[x - 1][y]))
-					queue.add({
+					queue.push({
 						x: x - 1,
 						y: y,
 					});
 				if (isCellUnchecked(field[x - 1][y + 1]))
-					queue.add({
+					queue.push({
 						x: x - 1,
 						y: y + 1,
 					});
 			}
 
 			if (isCellUnchecked(field[x][y - 1]))
-				queue.add({
+				queue.push({
 					x: x,
 					y: y - 1,
 				});
 			if (isCellUnchecked(field[x][y + 1]))
-				queue.add({
+				queue.push({
 					x: x,
 					y: y + 1,
 				});
 
 			if (field[x + 1]) {
 				if (isCellUnchecked(field[x + 1][y - 1]))
-					queue.add({
+					queue.push({
 						x: x + 1,
 						y: y - 1,
 					});
 				if (isCellUnchecked(field[x + 1][y]))
-					queue.add({
+					queue.push({
 						x: x + 1,
 						y: y,
 					});
 				if (isCellUnchecked(field[x + 1][y + 1]))
-					queue.add({
+					queue.push({
 						x: x + 1,
 						y: y + 1,
 					});

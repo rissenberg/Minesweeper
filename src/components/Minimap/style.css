@@ -2,8 +2,12 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in-out;
 }
 
-.hidden {
-    display: none;
+.show {
+    opacity: 1;
+    pointer-events: auto;
 }

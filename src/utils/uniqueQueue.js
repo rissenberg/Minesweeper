@@ -9,7 +9,6 @@ export class UniqueObjectQueue {
 		const firstElement = this.queue.values().next().value;
 		this.queue.delete(firstElement);
 
-		console.log(firstElement);
 		return JSON.parse(firstElement);
 	}
 

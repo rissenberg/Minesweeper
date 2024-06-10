@@ -21,4 +21,4 @@ Dispatcher.subscribe(store.doAction);
 export default store;
 
 Navbar();
-Field(20, 20, 10);
+Field(200, 200, 10);
