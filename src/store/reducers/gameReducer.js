@@ -1,35 +1,36 @@
 import {gameTypes} from "../actions/gameActions";
-import {createInitialMap, openCell} from "../../lib/gameLogic";
-import {MARKED_CELL_CODE} from "../../constants";
+import {fillMapWithBombs, markCell, openCell} from "./lib/gameLogic";
 
 export const gameReducer = (state, action) => {
     const newState = deepCopy(state);
 
     switch (action.type) {
+
         case gameTypes.SET_POSITION:
             newState.position = action.payload;
             return newState;
 
-        case gameTypes.INIT_MAP:
-            newState.openedCells = [];
-            newState.fieldMap = [];
-            for (let x = 0; x < action.payload.width; x++) {
-                newState.openedCells[x] = [];
-                newState.fieldMap[x] = [];
-                for (let y = 0; y < action.payload.height; y++)
-                    newState.openedCells[x][y] = null;
-            }
-            newState.width = action.payload.width;
-            newState.height = action.payload.height;
-            newState.mines = action.payload.mines;
-            newState.leftClosed = newState.width * newState.height;
+
+        case gameTypes.NEW_GAME:
+            const {width, height, mines} = action.payload;
+
+            newState.openedCells = new Array(width).fill(null)
+                    .map(() => new Array(width).fill(null));
+
+            newState.bombs = new Array(height).fill([]);
+
+            newState.width = width;
+            newState.height = height;
+            newState.mines = mines;
+            newState.leftClosed = width * height;
             newState.gameOver = false;
             newState.gameWon = false;
 
             return newState;
 
+
         case gameTypes.FILL_MAP:
-            newState.fieldMap = createInitialMap(
+            newState.bombs = fillMapWithBombs(
                 newState.width,
                 newState.height,
                 newState.mines,
@@ -38,11 +39,16 @@ export const gameReducer = (state, action) => {
 
             return newState;
 
+
         case gameTypes.OPEN_CELL:
             if (newState.gameOver || newState.gameWon)
-                return newState;
+                return state;
 
-            const counter = openCell(newState.fieldMap, newState.openedCells, action.payload);
+            const counter = openCell(newState.bombs, newState.openedCells, action.payload);
+
+            if (counter === 0)
+                return state;
+
             if (counter === -1)
                 newState.gameOver = true;
             else
@@ -53,21 +59,14 @@ export const gameReducer = (state, action) => {
 
             return newState;
 
+
         case gameTypes.MARK_CELL:
             if (newState.gameOver || newState.gameWon)
-                return newState;
+                return state;
 
-            const {x, y} = action.payload;
-
-            if (newState.openedCells[x][y] === null) {
-                newState.openedCells[x][y] = MARKED_CELL_CODE;
-                return newState;
-            }
-
-            if (newState.openedCells[x][y] === MARKED_CELL_CODE)
-                newState.openedCells[x][y] = null;
-
+            markCell(newState.openedCells, action.payload);
             return newState;
+
 
         default:
             return state;

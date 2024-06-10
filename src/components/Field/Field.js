@@ -1,17 +1,18 @@
-import Dispatcher from "../store/Dispatcher";
-import {CELL_SIZE} from "../constants";
-import {createFieldSector} from "./fieldSector";
-import {throttle} from "../utils/throttle";
-import {setPosition, initMap, fillMap} from "../store/actions/gameActions";
-import {removeMinimap, renderMinimap} from "./minimap";
+import Dispatcher from "../../store/Dispatcher";
+import {CELL_SIZE} from "../../config";
+import "./style.css";
+import {FieldView} from "../FieldView/FieldView";
+import {throttle} from "../../utils/throttle";
+import {setPosition, newGame, fillMap} from "../../store/actions/gameActions";
+import {removeMinimap, renderMinimap} from "../Minimap/Minimap";
 
 
-export const createField = (width, height, mines) => {
+export const Field = (width, height, mines) => {
     const { dispatch } = Dispatcher;
 
     const renderDelay = width * height > 500000 ? 50 : 25;
 
-    dispatch(initMap(width, height, mines));
+    dispatch(newGame(width, height, mines));
 
     const fieldContainer = document.getElementById("field-container");
     fieldContainer.style.width = `${width * CELL_SIZE}px`;
@@ -49,7 +50,7 @@ export const createField = (width, height, mines) => {
 
         dispatch(setPosition(x1, y1));
 
-        createFieldSector(x1, x2, y1, y2);
+        FieldView(x1, x2, y1, y2);
         if ((x2 - x1) < width || (y2 - y1) < height)
             renderMinimap(x1, x2, y1, y2, width, height)
         else

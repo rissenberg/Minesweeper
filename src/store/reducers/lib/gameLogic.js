@@ -1,13 +1,13 @@
-import {MARKED_CELL_CODE} from "../constants";
+import {MARKED_CELL_CODE} from "../../../config";
 
-export const createInitialMap = (width, height, mines, position) => {
-    const field = [];
+export const fillMapWithBombs = (width, height, mines, position) => {
+    const bombs = [];
     const indexes = [];
 
     for (let x = 0; x < width; x++) {
-        field[x] = [];
+        bombs[x] = [];
         for (let y = 0; y < height; y++) {
-            field[x][y] = false;
+            bombs[x][y] = false;
             if (x === position.x && y === position.y)
                 continue;
             indexes.push(x * height + y);
@@ -17,10 +17,10 @@ export const createInitialMap = (width, height, mines, position) => {
     shuffle(indexes);
 
     indexes.slice(0, mines).forEach(index => {
-        field[Math.floor(index / height)][index % height] = true;
+        bombs[Math.floor(index / height)][index % height] = true;
     });
 
-    return field;
+    return bombs;
 }
 
 const shuffle = (array) => {
@@ -30,70 +30,71 @@ const shuffle = (array) => {
     }
 };
 
-export const openCell = (fieldMap, openedCells, position) => {
-    if (openedCells[position.x][position.y] !== null)
+export const openCell = (bombs, cells, position) => {
+    const { x, y } = position;
+
+    if (cells[x][y] !== null)
         return 0;
 
-    const bombsAround = checkBombsAround(fieldMap, position.x, position.y);
-
+    const bombsAround = checkBombsAround(bombs, x, y);
     if (bombsAround === -1)
         return -1;
 
-    const queue = [{ x: position.x, y: position.y}];
+    const queue = [{ x, y }];
     let openedCounter = 0;
 
     while (queue.length) {
         const { x, y } = queue.shift()
-        if (openedCells[x][y] !== null && openedCells[x][y] !== MARKED_CELL_CODE)
+        if (cells[x][y] !== null && cells[x][y] !== MARKED_CELL_CODE)
             continue;
 
         openedCounter++;
 
-        const bombsAround = checkBombsAround(fieldMap, x, y);
+        const bombsAround = checkBombsAround(bombs, x, y);
 
-        openedCells[x][y] = bombsAround;
+        cells[x][y] = bombsAround;
         if (bombsAround === 0) {
-            if (fieldMap[x - 1]) {
-                if (fieldMap[x - 1][y - 1] !== null)
+            if (bombs[x - 1]) {
+                if (bombs[x - 1][y - 1] !== null)
                     queue.push({
                         x: x - 1,
                         y: y - 1,
                     });
-                if (fieldMap[x - 1][y] !== null)
+                if (bombs[x - 1][y] !== null)
                     queue.push({
                         x: x - 1,
                         y: y,
                     });
-                if (fieldMap[x - 1][y + 1] !== null)
+                if (bombs[x - 1][y + 1] !== null)
                     queue.push({
                         x: x - 1,
                         y: y + 1,
                     });
             }
 
-            if (fieldMap[x][y - 1] !== null)
+            if (bombs[x][y - 1] !== null)
                 queue.push({
                     x: x,
                     y: y - 1,
                 });
-            if (fieldMap[x][y + 1] !== null)
+            if (bombs[x][y + 1] !== null)
                 queue.push({
                     x: x,
                     y: y + 1,
                 });
 
-            if (fieldMap[x + 1] ) {
-                if (fieldMap[x + 1][y - 1] !== null)
+            if (bombs[x + 1] ) {
+                if (bombs[x + 1][y - 1] !== null)
                     queue.push({
                         x: x + 1,
                         y: y - 1,
                     });
-                if (fieldMap[x + 1][y] !== null)
+                if (bombs[x + 1][y] !== null)
                     queue.push({
                         x: x + 1,
                         y: y,
                     });
-                if (fieldMap[x + 1][y + 1] !== null)
+                if (bombs[x + 1][y + 1] !== null)
                     queue.push({
                         x: x + 1,
                         y: y + 1,
@@ -105,34 +106,44 @@ export const openCell = (fieldMap, openedCells, position) => {
     return openedCounter;
 }
 
-const checkBombsAround = (fieldMap, x, y) => {
+const checkBombsAround = (bombs, x, y) => {
     let counter = 0;
 
-    if (fieldMap[x] && fieldMap[x][y])
+    if (bombs[x] && bombs[x][y])
         return -1;
 
-    if (fieldMap[x - 1]) {
-        if (fieldMap[x - 1][y - 1])
+    if (bombs[x - 1]) {
+        if (bombs[x - 1][y - 1])
             counter++;
-        if (fieldMap[x - 1][y])
+        if (bombs[x - 1][y])
             counter++;
-        if (fieldMap[x - 1][y + 1])
-            counter++;
-    }
-    if (fieldMap[x]) {
-        if (fieldMap[x][y - 1])
-            counter++;
-        if (fieldMap[x][y + 1])
+        if (bombs[x - 1][y + 1])
             counter++;
     }
-    if (fieldMap[x + 1]) {
-        if (fieldMap[x + 1][y - 1])
+    if (bombs[x]) {
+        if (bombs[x][y - 1])
             counter++;
-        if (fieldMap[x + 1][y])
+        if (bombs[x][y + 1])
             counter++;
-        if (fieldMap[x + 1][y + 1])
+    }
+    if (bombs[x + 1]) {
+        if (bombs[x + 1][y - 1])
+            counter++;
+        if (bombs[x + 1][y])
+            counter++;
+        if (bombs[x + 1][y + 1])
             counter++;
     }
 
     return counter;
+}
+
+export const markCell = (cells, position) => {
+    const {x, y} = position;
+
+    if (cells[x][y] === null)
+        cells[x][y] = MARKED_CELL_CODE;
+
+    else if (cells[x][y] === MARKED_CELL_CODE)
+        cells[x][y] = null;
 }

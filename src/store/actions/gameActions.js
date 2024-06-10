@@ -1,7 +1,7 @@
 export const gameTypes = {
     SET_POSITION: 'SET_POSITION',
     OPEN_CELL: 'OPEN_CELL',
-    INIT_MAP: 'INIT_MAP',
+    NEW_GAME: 'NEW_GAME',
     FILL_MAP: 'FILL_MAP',
     MARK_CELL: 'MARK_CELL',
 }
@@ -30,8 +30,8 @@ export const markCell = (x, y) => ({
     },
 });
 
-export const initMap = (width, height, mines) => ({
-    type: gameTypes.INIT_MAP,
+export const newGame = (width, height, mines) => ({
+    type: gameTypes.NEW_GAME,
     payload: {
         width,
         height,

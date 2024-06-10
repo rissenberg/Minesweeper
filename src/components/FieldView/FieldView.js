@@ -2,15 +2,16 @@ import {
     CELL_SIZE,
     COLOR_BORDER,
     COLOR_CLOSED,
-    COLOR_FLAG,
+    COLOR_BOMB,
     COLOR_MARKED,
     COLOR_OPENED,
     COLOR_WHITE,
     FONT_SIZE, MARKED_CELL_CODE
-} from "../constants";
-import Store from '../index';
-import Dispatcher from "../store/Dispatcher";
-import {markCell, openCell} from "../store/actions/gameActions";
+} from "../../config";
+import Store from '../../index';
+import Dispatcher from "../../store/Dispatcher";
+import "./style.css";
+import {markCell, openCell} from "../../store/actions/gameActions";
 
 const DEFAULT_SECTOR_WIDTH = 30;
 const DEFAULT_SECTOR_HEIGHT = 20;
@@ -18,7 +19,7 @@ const DEFAULT_SECTOR_HEIGHT = 20;
 let prevEventListenerLeftClick;
 let prevEventListenerRightClick;
 
-export const createFieldSector = (x1, x2, y1, y2) => {
+export const FieldView = (x1, x2, y1, y2) => {
     const { dispatch } = Dispatcher;
 
     const canvas = document.getElementById("view-canvas");
@@ -58,8 +59,8 @@ export const createFieldSector = (x1, x2, y1, y2) => {
 
         for (let x = x1; x < x2; x++) {
             for (let y = y1; y < y2; y++) {
-                if (currentState.gameOver && currentState.fieldMap[x][y]) {
-                    ctx.fillStyle = COLOR_FLAG;
+                if (currentState.gameOver && currentState.bombs[x][y]) {
+                    ctx.fillStyle = COLOR_BOMB;
                     ctx.fillRect((x - x1) * CELL_SIZE + 1, (y - y1) * CELL_SIZE + 1,
                         CELL_SIZE - 2, CELL_SIZE - 2);
                 }

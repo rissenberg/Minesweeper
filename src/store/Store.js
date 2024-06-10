@@ -18,8 +18,16 @@ class Store {
     }
 
     doAction = (action) => {
-        this.currentState = this.reducer(this.currentState, action);
-        Array.from(this.subscribers.values()).forEach(render => render(this.currentState));
+        // TODO TEMP
+        const startTime = performance.now();
+        const newState = this.reducer(this.currentState, action);
+        const endTime = performance.now();
+        console.log(`Время выполнения: ${endTime - startTime} мс`);
+
+        if (this.currentState !== newState) {
+            this.currentState = newState;
+            Array.from(this.subscribers.values()).forEach(render => render(this.currentState));
+        }
     }
 }
 

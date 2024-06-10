@@ -1,4 +1,5 @@
-import {CELL_SIZE, COLOR_BORDER, COLOR_CLOSED, COLOR_FLAG} from "../constants";
+import {CELL_SIZE, COLOR_BORDER, COLOR_CLOSED, COLOR_BOMB} from "../../config";
+import "./style.css";
 
 let prevEventListener;
 
@@ -17,7 +18,7 @@ export const renderMinimap = (x1, x2, y1, y2, width, height) => {
     ctx.lineWidth = 3;
     ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-    ctx.strokeStyle = COLOR_FLAG;
+    ctx.strokeStyle = COLOR_BOMB;
     ctx.lineWidth = 3;
     ctx.strokeRect(
         x1 / width * canvas.width + 1,
