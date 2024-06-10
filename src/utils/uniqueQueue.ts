@@ -1,7 +1,7 @@
 export class UniqueObjectQueue {
 	queue = new Set();
 
-	add (item) {
+	add (item: any) {
 		this.queue.add(JSON.stringify(item));
 	}
 

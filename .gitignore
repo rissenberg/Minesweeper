@@ -3,6 +3,7 @@
 
 # Build
 .cache
+.parcel-cache
 dist
 
 # Node modules

@@ -1,15 +1,14 @@
 import Dispatcher from '../../store/Dispatcher';
 import { CELL_SIZE } from '../../config';
-import './style.css';
+import './style.scss';
 import { FieldView } from '../FieldView/FieldView';
 import { throttle } from '../../utils/throttle';
 import { setPosition, newGame, fillMap } from '../../store/actions/gameActions';
-import { removeMinimap, renderMinimap } from '../Minimap/Minimap';
-
+import { removeMinimap, Minimap } from '../Minimap/Minimap';
 
 const MINIMAP_TIMER = 2000;
 
-export const Field = (width, height, mines) => {
+export const Field = (width: number, height: number, mines: number) => {
 	const { dispatch } = Dispatcher;
 
 	const renderDelay = width * height > 500000 ? 50 : 25;
@@ -17,6 +16,9 @@ export const Field = (width, height, mines) => {
 	dispatch(newGame(width, height, mines));
 
 	const fieldContainer = document.getElementById('field-container');
+	if (!fieldContainer)
+		throw new Error('Could not locate field container');
+
 	fieldContainer.style.width = `${width * CELL_SIZE}px`;
 	fieldContainer.style.height = `${height * CELL_SIZE}px`;
 
@@ -25,10 +27,13 @@ export const Field = (width, height, mines) => {
 	let windowScrollX = window.scrollX;
 	let windowScrollY = window.scrollY;
 
-	let minimapTimeout = null;
+	let minimapTimeout = 0;
 
 	fieldContainer.addEventListener('click', (event) => {
 		const canvas = document.getElementById('view-canvas');
+		if (!canvas)
+			throw new Error('Could not locate field canvas');
+
 		const rect = canvas.getBoundingClientRect();
 
 		const x = Math.floor((event.clientX - rect.left) / CELL_SIZE)
@@ -36,7 +41,7 @@ export const Field = (width, height, mines) => {
 		const y = Math.floor((event.clientY - rect.top) / CELL_SIZE)
             + Math.floor(windowScrollY / CELL_SIZE + 0.9);
 
-		dispatch(fillMap({ x, y }));
+		dispatch(fillMap(x, y));
 	}, { once: true, capture: true });
 
 	const renderView = () => {
@@ -56,7 +61,7 @@ export const Field = (width, height, mines) => {
 
 		FieldView(x1, x2, y1, y2);
 		if ((x2 - x1) < width || (y2 - y1) < height) {
-			renderMinimap(x1, x2, y1, y2, width, height);
+			Minimap(x1, x2, y1, y2, width, height);
 			clearTimeout(minimapTimeout);
 
 			minimapTimeout = setTimeout(() => {

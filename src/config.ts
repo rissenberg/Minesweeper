@@ -13,4 +13,5 @@ export const COLOR_WHITE = '#ffffff';
 // Кодировки особых состояний ячеек - просто числа
 export const CELL_BOMB_CODE = -1;
 export const CELL_MARKED_CODE = 37;
+export const CELL_MARKED_BOMB_CODE = 38;
 export const CELL_CLOSED_CODE = 10;

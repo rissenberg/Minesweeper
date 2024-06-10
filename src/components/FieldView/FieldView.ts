@@ -7,24 +7,30 @@ import {
 	COLOR_MARKED,
 	COLOR_OPENED,
 	COLOR_WHITE,
-	CELL_MARKED_CODE, CELL_BOMB_CODE, CELL_CLOSED_CODE
+	CELL_MARKED_CODE, CELL_BOMB_CODE, CELL_CLOSED_CODE, CELL_MARKED_BOMB_CODE
 } from '../../config';
 import Store from '../../index';
 import Dispatcher from '../../store/Dispatcher';
-import './style.css';
+import './style.scss';
 import { markCell, openCell } from '../../store/actions/gameActions';
+import { ICallback, IGameState } from '../../store/types/types';
 
 const DEFAULT_SECTOR_WIDTH = 30;
 const DEFAULT_SECTOR_HEIGHT = 20;
 
-let prevEventListenerLeftClick;
-let prevEventListenerRightClick;
+let prevEventListenerLeftClick: ICallback;
+let prevEventListenerRightClick: ICallback;
 
-export const FieldView = (x1, x2, y1, y2) => {
+export const FieldView = (x1: number, x2: number, y1: number, y2: number) => {
 	const { dispatch } = Dispatcher;
 
-	const canvas = document.getElementById('view-canvas');
+	const canvas: HTMLCanvasElement | null = document.querySelector('#view-canvas');
+	if (!canvas)
+		throw new Error('Could not locate field canvas');
+
 	const ctx = canvas.getContext('2d');
+	if (!ctx)
+		throw new Error('Could not use field canvas context');
 
 	canvas.removeEventListener('click', prevEventListenerLeftClick);
 	canvas.removeEventListener('contextmenu', prevEventListenerRightClick);
@@ -54,7 +60,7 @@ export const FieldView = (x1, x2, y1, y2) => {
 		}
 	};
 
-	const renderSelectedCells = (currentState) => {
+	const renderSelectedCells = (currentState: IGameState) => {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		renderGrid();
 
@@ -68,7 +74,7 @@ export const FieldView = (x1, x2, y1, y2) => {
 					continue;
 				}
 				if (currentCell !== CELL_CLOSED_CODE && currentCell !== CELL_BOMB_CODE) {
-					ctx.fillStyle = currentCell === CELL_MARKED_CODE
+					ctx.fillStyle = currentCell === CELL_MARKED_CODE || currentCell === CELL_MARKED_BOMB_CODE
 						? COLOR_MARKED
 						: COLOR_OPENED;
 					ctx.fillRect((x - x1) * CELL_SIZE + 1, (y - y1) * CELL_SIZE + 1,
@@ -76,7 +82,7 @@ export const FieldView = (x1, x2, y1, y2) => {
 					if (currentCell > 0 && currentCell < 9) {
 						ctx.fillStyle = COLOR_WHITE;
 						ctx.font = `bold ${FONT_SIZE}px Arial`;
-						ctx.fillText(currentCell, (x - x1 + 0.3) * CELL_SIZE, (y - y1 + 0.7) * CELL_SIZE + 1);
+						ctx.fillText(currentCell.toString(), (x - x1 + 0.3) * CELL_SIZE, (y - y1 + 0.7) * CELL_SIZE + 1);
 					}
 				}
 			}
@@ -86,7 +92,7 @@ export const FieldView = (x1, x2, y1, y2) => {
 	Store.subscribe('canvas', renderSelectedCells);
 
 	const rect = canvas.getBoundingClientRect();
-	function handleClickCell (e){
+	function handleClickCell (e: MouseEvent){
 		const x = e.clientX - rect.left;
 		const y = e.clientY - rect.top;
 
@@ -98,7 +104,7 @@ export const FieldView = (x1, x2, y1, y2) => {
 	canvas.addEventListener('click', handleClickCell);
 	prevEventListenerLeftClick = handleClickCell;
 
-	function handleRightClickCell (e){
+	function handleRightClickCell (e: MouseEvent){
 		e.preventDefault();
 		const x = e.clientX - rect.left;
 		const y = e.clientY - rect.top;

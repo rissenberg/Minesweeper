@@ -1,11 +1,22 @@
 import { CELL_SIZE, COLOR_BORDER, COLOR_CLOSED, COLOR_BOMB } from '../../config';
-import './style.css';
+import './style.scss';
+import { ICallback } from '../../store/types/types';
 
-let prevEventListener;
+let prevEventListener: ICallback;
 
-export const renderMinimap = (x1, x2, y1, y2, width, height) => {
-	const canvas = document.getElementById('minimap-canvas');
+export const Minimap = (
+	x1: number, x2: number,
+	y1: number, y2: number,
+	width: number, height: number) =>
+{
+	const canvas: HTMLCanvasElement | null = document.querySelector('#minimap-canvas');
+	if (!canvas)
+		throw new Error('Could not locate minimap canvas');
+
 	const ctx = canvas.getContext('2d');
+	if (!ctx)
+		throw new Error('Could not use minimap canvas context');
+
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	canvas.removeEventListener('click', prevEventListener);
@@ -28,12 +39,12 @@ export const renderMinimap = (x1, x2, y1, y2, width, height) => {
 	);
 
 	const rect = canvas.getBoundingClientRect();
-	function handleClickCell (e){
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+	function handleClickCell (event: MouseEvent) {
+		const x = event.clientX - rect.left;
+		const y = event.clientY - rect.top;
 
-		const coord_X = Math.floor(x / canvas.width * width * CELL_SIZE);
-		const coord_Y = Math.floor(y / canvas.height * height * CELL_SIZE);
+		const coord_X = Math.floor(x / canvas!.width * width * CELL_SIZE);
+		const coord_Y = Math.floor(y / canvas!.height * height * CELL_SIZE);
 
 		window.scroll(coord_X, coord_Y);
 	}
@@ -42,6 +53,8 @@ export const renderMinimap = (x1, x2, y1, y2, width, height) => {
 
 export const removeMinimap = () => {
 	const canvas = document.getElementById('minimap-canvas');
+	if (!canvas)
+		throw new Error('Could not locate minimap canvas');
 	canvas.removeEventListener('click', prevEventListener);
 	canvas.classList.remove('show');
 };

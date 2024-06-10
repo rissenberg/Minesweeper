@@ -1,8 +1,10 @@
 import { gameTypes } from '../actions/gameActions';
 import { fillMapWithBombs, markCell, openCell } from './lib/gameLogic';
 import { CELL_CLOSED_CODE } from '../../config';
+import { IAction } from '../types/types';
+import { IGameState } from '../types/types';
 
-export const gameReducer = (state, action) => {
+export const gameReducer = (state: IGameState, action: IAction): IGameState => {
 	const newState = deepCopy(state);
 
 	switch (action.type) {
@@ -33,7 +35,7 @@ export const gameReducer = (state, action) => {
 			newState.width,
 			newState.height,
 			newState.mines,
-			action.payload.position,
+			action.payload,
 		);
 
 		return newState;
@@ -72,4 +74,4 @@ export const gameReducer = (state, action) => {
 	}
 };
 
-const deepCopy = obj => JSON.parse(JSON.stringify(obj));
+const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
