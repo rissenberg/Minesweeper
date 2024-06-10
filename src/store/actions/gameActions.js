@@ -1,4 +1,4 @@
-export const mapTypes = {
+export const gameTypes = {
     SET_POSITION: 'SET_POSITION',
     OPEN_CELL: 'OPEN_CELL',
     INIT_MAP: 'INIT_MAP',
@@ -7,7 +7,7 @@ export const mapTypes = {
 }
 
 export const setPosition = (x, y) => ({
-    type: mapTypes.SET_POSITION,
+    type: gameTypes.SET_POSITION,
     payload: {
         x,
         y
@@ -15,7 +15,7 @@ export const setPosition = (x, y) => ({
 });
 
 export const openCell = (x, y) => ({
-    type: mapTypes.OPEN_CELL,
+    type: gameTypes.OPEN_CELL,
     payload: {
         x,
         y
@@ -23,7 +23,7 @@ export const openCell = (x, y) => ({
 });
 
 export const markCell = (x, y) => ({
-    type: mapTypes.MARK_CELL,
+    type: gameTypes.MARK_CELL,
     payload: {
         x,
         y
@@ -31,7 +31,7 @@ export const markCell = (x, y) => ({
 });
 
 export const initMap = (width, height, mines) => ({
-    type: mapTypes.INIT_MAP,
+    type: gameTypes.INIT_MAP,
     payload: {
         width,
         height,
@@ -40,7 +40,7 @@ export const initMap = (width, height, mines) => ({
 });
 
 export const fillMap = (position) => ({
-    type: mapTypes.FILL_MAP,
+    type: gameTypes.FILL_MAP,
     payload: {
         position
     },

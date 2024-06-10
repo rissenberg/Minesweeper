@@ -2,7 +2,8 @@ import Store from "./store/Store";
 import Dispatcher from "./store/Dispatcher";
 import "./styles.css";
 import {createField} from "./components/field";
-import {mapReducer} from "./store/reducers/coordReducer";
+import {gameReducer} from "./store/reducers/gameReducer";
+import {COLOR_FLAG, COLOR_MARKED} from "./constants";
 
 const initialState = {
     position: {
@@ -14,25 +15,35 @@ const initialState = {
     mines: 0,
     leftClosed: 0,
     gameOver: false,
+    gameWon: false,
     fieldMap: [],
     openedCells: [],
 }
 
-const store = new Store(mapReducer, initialState);
+const store = new Store(gameReducer, initialState);
 Dispatcher.subscribe(store.doAction);
 
 function render(currentState) {
-    const coordLabel = document.querySelector(".coord-label");
+    const coordLabel = document.getElementById("coord-label");
     coordLabel.innerText = `Position: (${currentState.position.x}, ${currentState.position.y})`;
-    const minesLabel = document.querySelector(".mines-label");
+    const minesLabel = document.getElementById("mines-label");
     minesLabel.innerText = `Mines: ${currentState.mines}`;
-    const leftLabel = document.querySelector(".left-label");
+    const leftLabel = document.getElementById("left-label");
     leftLabel.innerText = `Left: ${currentState.leftClosed}`;
+    const statusLabel = document.getElementById("status-label");
+    if (currentState.gameOver) {
+        statusLabel.innerText = `Game Over`;
+        statusLabel.style.color = COLOR_FLAG;
+    }
+    if (currentState.gameWon) {
+        statusLabel.innerText = `You've Won!`;
+        statusLabel.style.color = COLOR_MARKED;
+    }
 }
 
 store.subscribe('position_label', render);
 
-createField(50, 50, 250);
+createField(10, 10, 4);
 
 export default store;
 

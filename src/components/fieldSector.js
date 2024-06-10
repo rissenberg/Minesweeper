@@ -10,7 +10,7 @@ import {
 } from "../constants";
 import Store from '../index';
 import Dispatcher from "../store/Dispatcher";
-import {markCell, openCell} from "../store/actions/coordActions";
+import {markCell, openCell} from "../store/actions/gameActions";
 
 const DEFAULT_SECTOR_WIDTH = 30;
 const DEFAULT_SECTOR_HEIGHT = 20;

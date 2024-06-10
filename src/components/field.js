@@ -2,7 +2,7 @@ import Dispatcher from "../store/Dispatcher";
 import {CELL_SIZE} from "../constants";
 import {createFieldSector} from "./fieldSector";
 import {throttle} from "../utils/throttle";
-import {setPosition, initMap, fillMap} from "../store/actions/coordActions";
+import {setPosition, initMap, fillMap} from "../store/actions/gameActions";
 import {removeMinimap, renderMinimap} from "./minimap";
 
 

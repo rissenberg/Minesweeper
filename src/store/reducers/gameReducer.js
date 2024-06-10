@@ -1,16 +1,16 @@
-import {mapTypes} from "../actions/coordActions";
+import {gameTypes} from "../actions/gameActions";
 import {createInitialMap, openCell} from "../../lib/gameLogic";
 import {MARKED_CELL_CODE} from "../../constants";
 
-export const mapReducer = (state, action) => {
+export const gameReducer = (state, action) => {
     const newState = deepCopy(state);
 
     switch (action.type) {
-        case mapTypes.SET_POSITION:
+        case gameTypes.SET_POSITION:
             newState.position = action.payload;
             return newState;
 
-        case mapTypes.INIT_MAP:
+        case gameTypes.INIT_MAP:
             newState.openedCells = [];
             newState.fieldMap = [];
             for (let x = 0; x < action.payload.width; x++) {
@@ -24,10 +24,11 @@ export const mapReducer = (state, action) => {
             newState.mines = action.payload.mines;
             newState.leftClosed = newState.width * newState.height;
             newState.gameOver = false;
+            newState.gameWon = false;
 
             return newState;
 
-        case mapTypes.FILL_MAP:
+        case gameTypes.FILL_MAP:
             newState.fieldMap = createInitialMap(
                 newState.width,
                 newState.height,
@@ -37,8 +38,8 @@ export const mapReducer = (state, action) => {
 
             return newState;
 
-        case mapTypes.OPEN_CELL:
-            if (newState.gameOver)
+        case gameTypes.OPEN_CELL:
+            if (newState.gameOver || newState.gameWon)
                 return newState;
 
             const counter = openCell(newState.fieldMap, newState.openedCells, action.payload);
@@ -47,12 +48,16 @@ export const mapReducer = (state, action) => {
             else
                 newState.leftClosed -= counter;
 
+            if (newState.leftClosed === newState.mines)
+                newState.gameWon = true;
+
             return newState;
 
-        case mapTypes.MARK_CELL:
-            const {x, y} = action.payload;
-            if (newState.gameOver)
+        case gameTypes.MARK_CELL:
+            if (newState.gameOver || newState.gameWon)
                 return newState;
+
+            const {x, y} = action.payload;
 
             if (newState.openedCells[x][y] === null) {
                 newState.openedCells[x][y] = MARKED_CELL_CODE;
