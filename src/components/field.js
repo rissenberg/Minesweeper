@@ -2,7 +2,8 @@ import Dispatcher from "../store/Dispatcher";
 import {CELL_SIZE} from "../constants";
 import {createFieldSector} from "./fieldSector";
 import {throttle} from "../utils/throttle";
-import {setPosition, initMap} from "../store/actions/coordActions";
+import {setPosition, initMap, fillMap} from "../store/actions/coordActions";
+import {removeMinimap, renderMinimap} from "./minimap";
 
 
 export const createField = (width, height, mines) => {
@@ -10,7 +11,7 @@ export const createField = (width, height, mines) => {
 
     const renderDelay = width * height > 500000 ? 50 : 25;
 
-    dispatch(initMap(width, height, mines, { x: 0, y: 0 }));
+    dispatch(initMap(width, height, mines));
 
     const fieldContainer = document.getElementById("field-container");
     fieldContainer.style.width = `${width * CELL_SIZE}px`;
@@ -20,6 +21,18 @@ export const createField = (width, height, mines) => {
     let cellNumY = Math.floor((window.innerHeight - 80) / CELL_SIZE);
     let windowScrollX = window.scrollX;
     let windowScrollY = window.scrollY;
+
+    fieldContainer.addEventListener("click", (event) => {
+        const canvas = document.getElementById('view-canvas');
+        const rect = canvas.getBoundingClientRect();
+
+        const x = Math.floor((event.clientX - rect.left) / CELL_SIZE)
+            + Math.floor(windowScrollX / CELL_SIZE + 0.9);
+        const y = Math.floor((event.clientY - rect.top) / CELL_SIZE)
+            + Math.floor(windowScrollY / CELL_SIZE + 0.9);
+
+        dispatch(fillMap({ x, y }));
+    }, {once: true, capture: true});
 
     const renderView = () => {
         windowScrollX = window.scrollX;
@@ -37,6 +50,10 @@ export const createField = (width, height, mines) => {
         dispatch(setPosition(x1, y1));
 
         createFieldSector(x1, x2, y1, y2);
+        if ((x2 - x1) < width || (y2 - y1) < height)
+            renderMinimap(x1, x2, y1, y2, width, height)
+        else
+            removeMinimap();
     }
 
     requestAnimationFrame(renderView);

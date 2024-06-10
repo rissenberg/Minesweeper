@@ -7,11 +7,16 @@
 </head>
 <body>
     <div id="app">
-        <div class="coord-label"></div>
+        <div class="navbar">
+            <div class="coord-label navbar-label"></div>
+            <div class="mines-label navbar-label"></div>
+            <div class="left-label navbar-label"></div>
+        </div>
 
-        <div class="field-container" id="field-container"></div>
-        <div class="view-container">
-            <canvas id="view-canvas" class="canvas-view"></canvas>
+        <div class="field-container" id="field-container">
+            <div class="view-container">
+                <canvas id="view-canvas" class="canvas-view"></canvas>
+            </div>
         </div>
 
         <canvas id="minimap-canvas" class="minimap" width="200" height="200"></canvas>

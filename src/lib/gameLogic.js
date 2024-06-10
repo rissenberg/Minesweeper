@@ -1,3 +1,5 @@
+import {MARKED_CELL_CODE} from "../constants";
+
 export const createInitialMap = (width, height, mines, position) => {
     const field = [];
     const indexes = [];
@@ -30,21 +32,22 @@ const shuffle = (array) => {
 
 export const openCell = (fieldMap, openedCells, position) => {
     if (openedCells[position.x][position.y] !== null)
-        return true;
+        return 0;
 
     const bombsAround = checkBombsAround(fieldMap, position.x, position.y);
 
-    if (bombsAround === -1) {
-        openedCells[position.x][position.y] = -1;
-        return false;
-    }
+    if (bombsAround === -1)
+        return -1;
 
     const queue = [{ x: position.x, y: position.y}];
+    let openedCounter = 0;
 
     while (queue.length) {
         const { x, y } = queue.shift()
-        if (openedCells[x][y] !== null)
+        if (openedCells[x][y] !== null && openedCells[x][y] !== MARKED_CELL_CODE)
             continue;
+
+        openedCounter++;
 
         const bombsAround = checkBombsAround(fieldMap, x, y);
 
@@ -99,7 +102,7 @@ export const openCell = (fieldMap, openedCells, position) => {
         }
     }
 
-    return true;
+    return openedCounter;
 }
 
 const checkBombsAround = (fieldMap, x, y) => {

@@ -9,6 +9,11 @@ const initialState = {
         x: 0,
         y: 0,
     },
+    width: 0,
+    height: 0,
+    mines: 0,
+    leftClosed: 0,
+    gameOver: false,
     fieldMap: [],
     openedCells: [],
 }
@@ -18,12 +23,16 @@ Dispatcher.subscribe(store.doAction);
 
 function render(currentState) {
     const coordLabel = document.querySelector(".coord-label");
-    coordLabel.innerText = `X: ${currentState.position.x}, Y: ${currentState.position.y}`;
+    coordLabel.innerText = `Position: (${currentState.position.x}, ${currentState.position.y})`;
+    const minesLabel = document.querySelector(".mines-label");
+    minesLabel.innerText = `Mines: ${currentState.mines}`;
+    const leftLabel = document.querySelector(".left-label");
+    leftLabel.innerText = `Left: ${currentState.leftClosed}`;
 }
 
 store.subscribe('position_label', render);
 
-createField(500, 500, 15000);
+createField(50, 50, 250);
 
 export default store;
 
