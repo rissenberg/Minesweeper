@@ -14,6 +14,48 @@
             <div id="left-label" class="navbar-label"></div>
         </div>
 
+        <div id="modal-start" class="modal">
+            <div class="modal-content">
+                <h1 id="modal-start-title">Сапер!</h1>
+                <div class="button-container">
+                    <button id="continue-btn" class="btn">Продолжить</button>
+                    <button id="new-game-btn" class="btn">Новая игра</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-new-game" class="modal">
+            <div class="modal-content">
+                <h1>Новая игра</h1>
+
+                <button id="new-game-btn-easy" class="btn">Новичок</button>
+                <button id="new-game-btn-medium" class="btn">Продвинутый</button>
+                <button id="new-game-btn-expert" class="btn">Эксперт</button>
+
+                <div id="new-game-error-label" class="error-label display-none">
+                    - Размеры поля W и H должны находиться в [3, 10000] <br>
+                    - Количество мин должно находиться в [1, W * H)
+                </div>
+
+                <form id="new-game-form">
+                    <div class="input-container">
+                        <label for="width-input">Ширина поля:</label>
+                        <input type="number" id="width-input" min="1" max="10000" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="height-input">Высота поля:</label>
+                        <input type="number" id="height-input" min="1" max="10000" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="mines-input">Количество мин:</label>
+                        <input type="number" id="mines-input" min="1" max="10000" required>
+                    </div>
+
+                    <button type="submit" id="start-btn" class="btn">Начать!</button>
+                </form>
+            </div>
+        </div>
+
         <div class="field-container" id="field-container">
             <div class="view-container">
                 <canvas id="view-canvas" class="canvas-view"></canvas>

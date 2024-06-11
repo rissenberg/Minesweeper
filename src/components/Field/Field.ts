@@ -8,12 +8,10 @@ import { removeMinimap, Minimap } from '../Minimap/Minimap';
 
 const MINIMAP_TIMER = 2000;
 
-export const Field = (width: number, height: number, mines: number) => {
+export const Field = () => {
 	const { dispatch } = Dispatcher;
 
 	const renderDelay = width * height > 500000 ? 50 : 25;
-
-	dispatch(newGame(width, height, mines));
 
 	const fieldContainer = document.getElementById('field-container');
 	if (!fieldContainer)

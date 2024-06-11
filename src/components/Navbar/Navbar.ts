@@ -12,18 +12,18 @@ export const Navbar = () => {
 
 	function render(currentState: IGameState) {
 		if (coordLabel)
-			coordLabel.innerText = `Position: (${currentState.position.x}, ${currentState.position.y})`;
+			coordLabel.innerText = `Позиция: (${currentState.position.x}, ${currentState.position.y})`;
 		if (minesLabel)
-			minesLabel.innerText = `Mines: ${currentState.mines}`;
+			minesLabel.innerText = `Мин: ${currentState.mines}`;
 		if (leftLabel)
-			leftLabel.innerText = `Left: ${currentState.leftClosed}`;
+			leftLabel.innerText = `Осталось: ${currentState.leftClosed}`;
 
 		if (currentState.gameOver && statusLabel) {
-			statusLabel.innerText = 'Game Over';
+			statusLabel.innerText = 'Игра окончена';
 			statusLabel.style.color = COLOR_BOMB;
 		}
 		if (currentState.gameWon && statusLabel) {
-			statusLabel.innerText = 'You\'ve Won!';
+			statusLabel.innerText = 'Победа!';
 			statusLabel.style.color = COLOR_MARKED;
 		}
 	}

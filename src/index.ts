@@ -5,6 +5,7 @@ import { Field } from './components/Field/Field';
 import { gameReducer } from './store/reducers/gameReducer';
 import { Navbar } from './components/Navbar/Navbar';
 import { IGameState } from './store/types/types';
+import { NewGameMenu } from './components/Menu/NewGameMenu/NewGameMenu';
 
 const initialState: IGameState = {
 	position: {
@@ -26,4 +27,6 @@ Dispatcher.subscribe(store.doAction);
 export default store;
 
 Navbar();
-Field(2000, 2000, 4000);
+// Field(60, 30, 0);
+
+NewGameMenu();
