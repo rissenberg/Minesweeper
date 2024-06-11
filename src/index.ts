@@ -6,20 +6,26 @@ import { gameReducer } from './store/reducers/gameReducer';
 import { Navbar } from './components/Navbar/Navbar';
 import { IGameState } from './store/types/types';
 import { NewGameMenu } from './components/Menu/NewGameMenu/NewGameMenu';
-import { newGame } from './store/actions/gameActions';
+import { loadGame } from './store/actions/gameActions';
+import { StartMenu } from './components/Menu/StartMenu/StartMenu';
+import { enableAutosave, getAutosavedData } from './components/Autosave/Autosave';
+
+
+const autosave = getAutosavedData();
 
 const initialState: IGameState = {
 	position: {
 		x: 0,
 		y: 0,
 	},
-	width: 0,
-	height: 0,
-	mines: 0,
+	width: 60,
+	height: 30,
+	mines: 10,
 	leftClosed: 0,
 	field: [],
 	gameOver: false,
 	gameWon: false,
+	gameInProgress: false,
 };
 
 const store = new Store(gameReducer, initialState);
@@ -28,8 +34,12 @@ Dispatcher.subscribe(store.doAction);
 export default store;
 
 Navbar();
-
-Dispatcher.dispatch(newGame(60, 30, 100));
-Field(60, 30);
-
+StartMenu();
 NewGameMenu();
+
+if (autosave) {
+	Field(autosave.width, autosave.height);
+	Dispatcher.dispatch(loadGame(autosave));
+}
+
+enableAutosave();

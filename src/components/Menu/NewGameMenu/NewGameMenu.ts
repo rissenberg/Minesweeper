@@ -2,13 +2,12 @@ import '../style.scss';
 import { Field } from '../../Field/Field';
 import Dispatcher from '../../../store/Dispatcher';
 import { newGame } from '../../../store/actions/gameActions';
+import { disableScroll, enableScroll } from '../../../utils/disableScroll';
 
 export const NewGameMenu = () => {
 	const newGameModal = document.getElementById('modal-new-game');
 	if (!newGameModal)
 		throw new Error('Could not locate start menu');
-
-	newGameModal.classList.add('show');
 
 	const easyBtn = document.getElementById('new-game-btn-easy');
 	const mediumBtn = document.getElementById('new-game-btn-medium');
@@ -17,9 +16,9 @@ export const NewGameMenu = () => {
 	const form = document.getElementById('new-game-form');
 	const errorLabel = document.getElementById('new-game-error-label');
 
-	const widthInput: HTMLInputElement | null = document.querySelector('#width-input');
-	const heightInput:  HTMLInputElement | null = document.querySelector('#height-input');
-	const minesInput:  HTMLInputElement | null = document.querySelector('#mines-input');
+	const widthInput: HTMLInputElement | null = newGameModal.querySelector('#width-input');
+	const heightInput:  HTMLInputElement | null = newGameModal.querySelector('#height-input');
+	const minesInput:  HTMLInputElement | null = newGameModal.querySelector('#mines-input');
 
 	easyBtn!.addEventListener('click', () => {
 		widthInput!.value = '9';
@@ -46,7 +45,7 @@ export const NewGameMenu = () => {
 		const mines = +minesInput!.value;
 
 		if ( width < 4 || width > 10000
-			|| height < 4 || height > 1000
+			|| height < 4 || height > 10000
 			|| mines < 1 || mines > (width * height - 1)
 		) {
 			errorLabel!.classList.remove('display-none');
@@ -70,6 +69,7 @@ export const hideNewGameMenu = () => {
 		throw new Error('Could not locate start menu');
 
 	newGameModal.classList.remove('show');
+	enableScroll();
 };
 
 export const showNewGameMenu = () => {
@@ -78,4 +78,5 @@ export const showNewGameMenu = () => {
 		throw new Error('Could not locate start menu');
 
 	newGameModal.classList.add('show');
+	disableScroll();
 };

@@ -2,7 +2,7 @@ import { COLOR_BOMB, COLOR_MARKED } from '../../config';
 import store from '../../index';
 import './style.scss';
 import { IGameState } from '../../store/types/types';
-import { showNewGameMenu } from '../Menu/NewGameMenu/NewGameMenu';
+import { showStartMenu } from '../Menu/StartMenu/StartMenu';
 
 
 export const Navbar = () => {
@@ -14,7 +14,7 @@ export const Navbar = () => {
 	const menuButton = document.getElementById('navbar-menu-btn');
 
 	menuButton!.addEventListener('click', () => {
-		showNewGameMenu();
+		showStartMenu();
 	});
 
 	function render(currentState: IGameState) {
@@ -32,6 +32,9 @@ export const Navbar = () => {
 		if (currentState.gameWon && statusLabel) {
 			statusLabel.innerText = 'Победа!';
 			statusLabel.style.color = COLOR_MARKED;
+		}
+		if (!currentState.gameOver && !currentState.gameWon && statusLabel) {
+			statusLabel.innerText = '';
 		}
 	}
 

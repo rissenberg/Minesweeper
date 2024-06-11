@@ -30,13 +30,31 @@ export const gameReducer = (state: IGameState, action: IAction): IGameState => {
 		return newState;
 
 
+	case gameTypes.LOAD_GAME:
+		const { x, y } = action.payload;
+
+		newState.field = action.payload.field;
+		newState.width = action.payload.width;
+		newState.height = action.payload.height;
+		newState.mines = action.payload.mines;
+		newState.leftClosed = action.payload.leftClosed;
+		newState.position = { x, y };
+		newState.gameInProgress = true;
+
+		return newState;
+
+
 	case gameTypes.FILL_MAP:
+		if (newState.gameInProgress)
+			return state;
+
 		newState.field = fillMapWithBombs(
 			newState.width,
 			newState.height,
 			newState.mines,
 			action.payload,
 		);
+		newState.gameInProgress = true;
 
 		return newState;
 
@@ -50,13 +68,18 @@ export const gameReducer = (state: IGameState, action: IAction): IGameState => {
 		if (counter === 0)
 			return state;
 
-		if (counter === -1)
+		if (counter === -1) {
 			newState.gameOver = true;
+			newState.gameInProgress= false;
+		}
+
 		else
 			newState.leftClosed -= counter;
 
-		if (newState.leftClosed <= newState.mines)
+		if (newState.leftClosed <= newState.mines) {
 			newState.gameWon = true;
+			newState.gameInProgress = false;
+		}
 
 		return newState;
 

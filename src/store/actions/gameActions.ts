@@ -1,9 +1,11 @@
 import { IAction } from '../types/types';
+import { IAutosaveProps } from '../../components/Autosave/types';
 
 export const gameTypes = {
 	SET_POSITION: 'SET_POSITION',
 	OPEN_CELL: 'OPEN_CELL',
 	NEW_GAME: 'NEW_GAME',
+	LOAD_GAME: 'LOAD_GAME',
 	FILL_MAP: 'FILL_MAP',
 	MARK_CELL: 'MARK_CELL',
 };
@@ -40,6 +42,12 @@ export const newGame = (width: number, height: number, mines: number): IAction =
 		mines
 	},
 });
+
+export const loadGame = (autosave: IAutosaveProps): IAction =>
+	({
+		type: gameTypes.LOAD_GAME,
+		payload: autosave,
+	});
 
 export const fillMap =  (x: number, y: number): IAction => ({
 	type: gameTypes.FILL_MAP,

@@ -14,6 +14,7 @@ export interface IGameState {
 	field: number[][],
 	gameOver: boolean,
 	gameWon: boolean,
+	gameInProgress: boolean,
 }
 
 export type IPosition = {
