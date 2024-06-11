@@ -1,0 +1,105 @@
+.modal {
+  position: fixed;
+  z-index: 20;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.modal-content {
+  width: 400px;
+  padding: 40px 25px;
+  border-radius: 10px;
+  background-color: #fff;
+  text-align: center;
+
+  h1 {
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+}
+
+.button-container {
+  margin: 25px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  button {
+    font-size: 16px;
+  }
+}
+
+.btn {
+  padding: 10px 20px;
+  min-width: 120px;
+  background-color: #337ab7;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #2e6da4;
+  }
+
+  &:disabled {
+    background-color: #748898;
+  }
+}
+
+.error-label {
+  color: #a94442;
+  font-size: 14px;
+  margin: -10px 0 15px 0;
+  line-height: 25px;
+  text-align: left;
+  padding: 0 10px;
+}
+
+.display-none {
+  display: none;
+}
+
+#new-game-form {
+  margin: 25px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .input-container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  label {
+    width: 140px;
+  }
+
+  input {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  button {
+    margin-top: 25px;
+  }
+}
+
+#back-btn {
+  background-color: #9da4ad;
+}
+

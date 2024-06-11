@@ -1,0 +1,13 @@
+# IDE
+.idea
+
+# Build
+.cache
+.parcel-cache
+dist
+
+# Node modules
+node_modules
+
+# lock files
+package-lock.json
