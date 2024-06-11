@@ -10,7 +10,7 @@ import { loadGame } from './store/actions/gameActions';
 import { StartMenu } from './components/Menu/StartMenu/StartMenu';
 import { enableAutosave, getAutosavedData } from './components/Autosave/Autosave';
 
-
+// Получение сохраненной игры, если она имеется
 const autosave = getAutosavedData();
 
 const initialState: IGameState = {

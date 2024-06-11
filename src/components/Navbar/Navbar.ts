@@ -4,7 +4,10 @@ import './style.scss';
 import { IGameState } from '../../store/types/types';
 import { showStartMenu } from '../Menu/StartMenu/StartMenu';
 
-
+//
+// Функция добавляющая обработчики на навбар
+// Ничего необычного
+//
 export const Navbar = () => {
 	const coordLabel = document.getElementById('coord-label');
 	const minesLabel = document.getElementById('mines-label');

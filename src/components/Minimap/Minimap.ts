@@ -4,6 +4,10 @@ import { ICallback } from '../../store/types/types';
 
 let prevEventListener: ICallback;
 
+//
+// Функция добавляющая обработчики на миникарту
+// На вход получает координаты границ видимой области поля и размеры всего поля
+//
 export const Minimap = (
 	x1: number, x2: number,
 	y1: number, y2: number,
@@ -25,10 +29,12 @@ export const Minimap = (
 	ctx.fillStyle = COLOR_CLOSED;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+	// Обводка границ
 	ctx.strokeStyle = COLOR_BORDER;
 	ctx.lineWidth = 3;
 	ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
+	// Не пугайтесь названию цвета - это обводка границ видимой области на миникарте
 	ctx.strokeStyle = COLOR_BOMB;
 	ctx.lineWidth = 3;
 	ctx.strokeRect(
@@ -38,6 +44,8 @@ export const Minimap = (
 		(y2-y1)/ height * canvas.height - 2
 	);
 
+	// Обработчик клика по миникарте
+	// Перемещает камеру игрока на ту часть поля, куда он указал
 	const rect = canvas.getBoundingClientRect();
 	function handleClickCell (event: MouseEvent) {
 		const x = event.clientX - rect.left;
@@ -51,6 +59,7 @@ export const Minimap = (
 	canvas.addEventListener('click', handleClickCell);
 };
 
+// Скрытие миникарты и удаление обработчика по перемещению камеры
 export const removeMinimap = () => {
 	const canvas = document.getElementById('minimap-canvas');
 	if (!canvas)

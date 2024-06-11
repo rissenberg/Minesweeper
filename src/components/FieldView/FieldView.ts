@@ -18,9 +18,14 @@ import { ICallback, IGameState } from '../../store/types/types';
 const DEFAULT_SECTOR_WIDTH = 30;
 const DEFAULT_SECTOR_HEIGHT = 20;
 
+// Для очищения event listeners
 let prevEventListenerLeftClick: ICallback;
 let prevEventListenerRightClick: ICallback;
 
+//
+// Функция рендер видимой области игровой карты
+// Принимает на вход координаты границ видимой области
+//
 export const FieldView = (x1: number, x2: number, y1: number, y2: number) => {
 	const { dispatch } = Dispatcher;
 
@@ -32,6 +37,7 @@ export const FieldView = (x1: number, x2: number, y1: number, y2: number) => {
 	if (!ctx)
 		throw new Error('Could not use field canvas context');
 
+	// Удаление старых обработчиков, потому что координаты поменялись
 	canvas.removeEventListener('click', prevEventListenerLeftClick);
 	canvas.removeEventListener('contextmenu', prevEventListenerRightClick);
 
@@ -41,6 +47,7 @@ export const FieldView = (x1: number, x2: number, y1: number, y2: number) => {
 	canvas.width = FIELD_WIDTH * CELL_SIZE;
 	canvas.height = FIELD_HEIGHT * CELL_SIZE;
 
+	// Отрисовка сетки поля
 	const renderGrid = () => {
 		ctx.fillStyle = COLOR_CLOSED;
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -60,25 +67,34 @@ export const FieldView = (x1: number, x2: number, y1: number, y2: number) => {
 		}
 	};
 
+	// Функция, рендерящая по данным из Store состояния ячеек в видимой области
+	// Подробнее о состояниях ячеек в файле constants
 	const renderSelectedCells = (currentState: IGameState) => {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		renderGrid();
 
+		// Проходим по всей видимой области
 		for (let x = x1; x < x2; x++) {
 			for (let y = y1; y < y2; y++) {
 				const currentCell = currentState.field[x][y];
+
+				// При поражении отображаются все бомбы
 				if (currentState.gameOver && currentCell === CELL_BOMB_CODE) {
 					ctx.fillStyle = COLOR_BOMB;
 					ctx.fillRect((x - x1) * CELL_SIZE + 1, (y - y1) * CELL_SIZE + 1,
 						CELL_SIZE - 2, CELL_SIZE - 2);
 					continue;
 				}
+
+				// Отображение открытых ячеек и помеченных флагами
 				if (currentCell !== CELL_CLOSED_CODE && currentCell !== CELL_BOMB_CODE) {
 					ctx.fillStyle = currentCell === CELL_MARKED_CODE || currentCell === CELL_MARKED_BOMB_CODE
 						? COLOR_MARKED
 						: COLOR_OPENED;
 					ctx.fillRect((x - x1) * CELL_SIZE + 1, (y - y1) * CELL_SIZE + 1,
 						CELL_SIZE - 2, CELL_SIZE - 2);
+
+					// Так же, если рядом с клеткой стоят бомбы, их количество нужно показать
 					if (currentCell > 0 && currentCell < 9) {
 						ctx.fillStyle = COLOR_WHITE;
 						ctx.font = `bold ${FONT_SIZE}px Arial`;
@@ -91,6 +107,8 @@ export const FieldView = (x1: number, x2: number, y1: number, y2: number) => {
 
 	Store.subscribe('canvas', renderSelectedCells);
 
+
+	// Обработчик левого клика и подсчет координаты текущей ячейки
 	const rect = canvas.getBoundingClientRect();
 	function handleClickCell (e: MouseEvent){
 		const x = e.clientX - rect.left;
@@ -101,9 +119,12 @@ export const FieldView = (x1: number, x2: number, y1: number, y2: number) => {
 
 		dispatch(openCell(coord_X, coord_Y));
 	}
+
 	canvas.addEventListener('click', handleClickCell);
 	prevEventListenerLeftClick = handleClickCell;
 
+
+	// Обработчик правого клика и подсчет координаты текущей ячейки
 	function handleRightClickCell (e: MouseEvent){
 		e.preventDefault();
 		const x = e.clientX - rect.left;
@@ -114,6 +135,8 @@ export const FieldView = (x1: number, x2: number, y1: number, y2: number) => {
 
 		dispatch(markCell(coord_X, coord_Y));
 	}
+
 	canvas.addEventListener('contextmenu', handleRightClickCell);
 	prevEventListenerRightClick = handleRightClickCell;
+
 };

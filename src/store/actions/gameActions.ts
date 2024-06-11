@@ -1,13 +1,14 @@
 import { IAction } from '../types/types';
 import { IAutosaveProps } from '../../components/Autosave/types';
 
+// Опишу
 export const gameTypes = {
-	SET_POSITION: 'SET_POSITION',
-	OPEN_CELL: 'OPEN_CELL',
-	NEW_GAME: 'NEW_GAME',
-	LOAD_GAME: 'LOAD_GAME',
-	FILL_MAP: 'FILL_MAP',
-	MARK_CELL: 'MARK_CELL',
+	SET_POSITION: 'SET_POSITION',		// Установка координат видмой области
+	OPEN_CELL: 'OPEN_CELL',					// Открыть выбранную ячейку
+	NEW_GAME: 'NEW_GAME',						// Начать новую игру. Тут же задаются параметры размера поля и число бомб
+	LOAD_GAME: 'LOAD_GAME',					// Загрузка игры из сохранения
+	FILL_MAP: 'FILL_MAP',						// Заполнение поля бомбами, кроме выбранной клетки
+	MARK_CELL: 'MARK_CELL',					// Отметить флагом выбранную ячейку
 };
 
 export const setPosition = (x: number, y: number): IAction => ({

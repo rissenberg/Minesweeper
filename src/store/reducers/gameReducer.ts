@@ -4,8 +4,13 @@ import { CELL_CLOSED_CODE } from '../../config';
 import { IAction } from '../types/types';
 import { IGameState } from '../types/types';
 
+//
+// Редуктор по переданному ему Action изменяет хранилище
+// Здесь описана лишь базоваля логика - чтение типа Action и выполнение действий ему соответствующие
+// Тяжелая логика подсчетов, генераций и прочего вынесена в ./lib/gameLogic.ts
+//
 export const gameReducer = (state: IGameState, action: IAction): IGameState => {
-	const newState = deepCopy(state);
+	const newState = deepCopy(state);		// Flux Store немутабельный! мы полностью копируем обьект и возвращаем новый
 
 	switch (action.type) {
 
@@ -47,7 +52,7 @@ export const gameReducer = (state: IGameState, action: IAction): IGameState => {
 
 	case gameTypes.FILL_MAP:
 		if (newState.gameInProgress)
-			return state;
+			return state;			// Здесь и далее: возвращаем прежний объект, потому что не было изменений => не будет ререндеринга
 
 		newState.field = fillMapWithBombs(
 			newState.width,
@@ -98,4 +103,7 @@ export const gameReducer = (state: IGameState, action: IAction): IGameState => {
 	}
 };
 
+//
+// Простая функция копирования объекта. Для наших нужд как нельзя подходит
+//
 const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));

@@ -3,10 +3,13 @@ import Store from '../../index';
 import { throttle } from '../../utils/throttle';
 import { IAutosaveProps } from './types';
 
+//
+// Функция включения автосохранения - запсывает некоторые данные из хранилища flux в localstorage
+//
 export const enableAutosave = () => {
 	const autosave = (currentState: IGameState) => {
 		if (currentState.gameWon || currentState.gameOver) {
-			localStorage.removeItem('autosave');
+			localStorage.removeItem('autosave');		// Удаление сохранения при завершении игры
 			return;
 		}
 
@@ -32,6 +35,9 @@ export const enableAutosave = () => {
 	Store.subscribe('autosave', throttle(autosave, 1000));
 };
 
+//
+// Функция парсинга строки из localstorage обратно к необходимому виду
+//
 export const getAutosavedData = (): IAutosaveProps | undefined => {
 	const data = localStorage.getItem('autosave')?.split(',');
 
