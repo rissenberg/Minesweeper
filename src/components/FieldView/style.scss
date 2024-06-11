@@ -2,11 +2,12 @@
     position: fixed;
     inset: 60px 20px auto auto;
     width: calc(100% - 40px);
+    height: calc(100% - 80px);
     display: flex;
     align-items: center;
 }
 
 .canvas-view {
-    margin: 0 auto;
+    margin: auto;
     cursor: pointer;
 }

@@ -56,8 +56,10 @@ export const NewGameMenu = () => {
 		}
 
 		hideNewGameMenu();
+		window.scroll(0, 0);
 		Field(width, height);
 		Dispatcher.dispatch(newGame(width, height, mines));
+
 	});
 
 };

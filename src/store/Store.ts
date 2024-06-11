@@ -16,7 +16,7 @@ class Store<T> {
 
 	subscribe = (component: string, render: ICallback) => {
 		this.subscribers.set(component, render);
-		render(this.currentState);
+		// render(this.currentState);
 	};
 
 	doAction = (action: IAction) => {

@@ -50,9 +50,6 @@ export const Field = (width: number, height: number) => {
 	}, { once: true, capture: true });
 
 	const renderView = () => {
-		windowScrollX = window.scrollX;
-		windowScrollY = window.scrollY;
-
 		const x1 = Math.floor(windowScrollX / CELL_SIZE + 0.9);
 		const y1 = Math.floor(windowScrollY / CELL_SIZE + 0.9);
 		const x2 = x1 + cellNumX > width
@@ -61,8 +58,6 @@ export const Field = (width: number, height: number) => {
 		const y2 = y1 + cellNumY > height
 			? height
 			: y1 + cellNumY;
-
-		dispatch(setPosition(x1, y1));
 
 		FieldView(x1, x2, y1, y2);
 		if ((x2 - x1) < width || (y2 - y1) < height) {
@@ -82,12 +77,26 @@ export const Field = (width: number, height: number) => {
 	const handleWindowResize = throttle(() => {
 		cellNumX = Math.floor((window.innerWidth - 40) / CELL_SIZE);
 		cellNumY = Math.floor((window.innerHeight - 70) / CELL_SIZE);
+		windowScrollX = window.scrollX;
+		windowScrollY = window.scrollY;
 
-		requestAnimationFrame(renderView);
+		const x1 = Math.floor(windowScrollX / CELL_SIZE + 0.9);
+		const y1 = Math.floor(windowScrollY / CELL_SIZE + 0.9);
+
+		renderView();
+		dispatch(setPosition(x1, y1));
 	}, renderDelay);
 
 	const handleWindowScroll = throttle(() => {
-		requestAnimationFrame(renderView);
+		windowScrollX = window.scrollX;
+		windowScrollY = window.scrollY;
+
+		const x1 = Math.floor(windowScrollX / CELL_SIZE + 0.9);
+		const y1 = Math.floor(windowScrollY / CELL_SIZE + 0.9);
+
+		renderView();
+		dispatch(setPosition(x1, y1));
+
 	}, renderDelay);
 
 	window.addEventListener('resize', handleWindowResize);
