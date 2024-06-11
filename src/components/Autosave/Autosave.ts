@@ -23,6 +23,9 @@ export const enableAutosave = () => {
 
 		const savedData = [width, height, mines, leftClosed, x, y, ...field].join(',');
 
+		if (savedData.length > 3_000_000)
+			return;
+
 		localStorage.setItem('autosave', savedData);
 	};
 

@@ -26,6 +26,7 @@ export const gameReducer = (state: IGameState, action: IAction): IGameState => {
 		newState.leftClosed = width * height;
 		newState.gameOver = false;
 		newState.gameWon = false;
+		newState.gameInProgress = false;
 
 		return newState;
 

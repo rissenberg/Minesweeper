@@ -21,6 +21,7 @@ class Store<T> {
 
 	doAction = (action: IAction) => {
 		const newState = this.reducer(this.currentState, action);
+		console.log(newState);
 		if (this.currentState !== newState) {
 			this.currentState = newState;
 			Array.from(this.subscribers.values()).forEach(render => render(this.currentState));
