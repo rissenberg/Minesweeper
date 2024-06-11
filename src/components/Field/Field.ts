@@ -5,17 +5,24 @@ import { FieldView } from '../FieldView/FieldView';
 import { throttle } from '../../utils/throttle';
 import { setPosition, newGame, fillMap } from '../../store/actions/gameActions';
 import { removeMinimap, Minimap } from '../Minimap/Minimap';
+import { ICallback } from '../../store/types/types';
 
 const MINIMAP_TIMER = 2000;
 
-export const Field = () => {
-	const { dispatch } = Dispatcher;
+let prevScrollHandler: ICallback;
+let prevResizeHandler: ICallback;
 
-	const renderDelay = width * height > 500000 ? 50 : 25;
-
+export const Field = (width: number, height: number) => {
 	const fieldContainer = document.getElementById('field-container');
 	if (!fieldContainer)
 		throw new Error('Could not locate field container');
+
+	window.removeEventListener('scroll', prevScrollHandler);
+	window.removeEventListener('resize', prevResizeHandler);
+
+	const { dispatch } = Dispatcher;
+
+	const renderDelay = width * height > 500000 ? 50 : 25;
 
 	fieldContainer.style.width = `${width * CELL_SIZE}px`;
 	fieldContainer.style.height = `${height * CELL_SIZE}px`;
@@ -70,17 +77,22 @@ export const Field = () => {
 			removeMinimap();
 	};
 
-	requestAnimationFrame(renderView);
+	renderView();
 
-	window.addEventListener('resize', throttle(() => {
+	const handleWindowResize = throttle(() => {
 		cellNumX = Math.floor((window.innerWidth - 40) / CELL_SIZE);
 		cellNumY = Math.floor((window.innerHeight - 70) / CELL_SIZE);
 
 		requestAnimationFrame(renderView);
-	}, renderDelay));
+	}, renderDelay);
 
-	window.addEventListener('scroll', throttle(() => {
+	const handleWindowScroll = throttle(() => {
 		requestAnimationFrame(renderView);
-	}, renderDelay));
+	}, renderDelay);
 
+	window.addEventListener('resize', handleWindowResize);
+	window.addEventListener('scroll', handleWindowScroll);
+
+	prevResizeHandler = handleWindowResize;
+	prevScrollHandler = handleWindowScroll;
 };

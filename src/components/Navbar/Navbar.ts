@@ -2,6 +2,7 @@ import { COLOR_BOMB, COLOR_MARKED } from '../../config';
 import store from '../../index';
 import './style.scss';
 import { IGameState } from '../../store/types/types';
+import { showNewGameMenu } from '../Menu/NewGameMenu/NewGameMenu';
 
 
 export const Navbar = () => {
@@ -9,6 +10,12 @@ export const Navbar = () => {
 	const minesLabel = document.getElementById('mines-label');
 	const leftLabel = document.getElementById('left-label');
 	const statusLabel = document.getElementById('status-label');
+
+	const menuButton = document.getElementById('navbar-menu-btn');
+
+	menuButton!.addEventListener('click', () => {
+		showNewGameMenu();
+	});
 
 	function render(currentState: IGameState) {
 		if (coordLabel)

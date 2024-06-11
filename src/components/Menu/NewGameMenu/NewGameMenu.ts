@@ -1,5 +1,7 @@
 import '../style.scss';
 import { Field } from '../../Field/Field';
+import Dispatcher from '../../../store/Dispatcher';
+import { newGame } from '../../../store/actions/gameActions';
 
 export const NewGameMenu = () => {
 	const newGameModal = document.getElementById('modal-new-game');
@@ -54,7 +56,8 @@ export const NewGameMenu = () => {
 		}
 
 		hideNewGameMenu();
-		Field(width, height, mines);
+		Field(width, height);
+		Dispatcher.dispatch(newGame(width, height, mines));
 	});
 
 };
